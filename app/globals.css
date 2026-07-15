@@ -1,0 +1,135 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Design tokens ─────────────────────────────────────── */
+:root {
+  --monad: #04ff2c;
+  --monad-dim: rgba(4, 255, 44, 0.12);
+  --monad-glow: rgba(4, 255, 44, 0.25);
+  --surface-base: #0a0a0a;
+  --surface-card: rgba(255, 255, 255, 0.04);
+  --surface-hover: rgba(255, 255, 255, 0.07);
+  --surface-border: rgba(255, 255, 255, 0.08);
+  --surface-strong: rgba(255, 255, 255, 0.12);
+  --text-primary: #f4f4f5;
+  --text-secondary: #71717a;
+  --text-muted: #3f3f46;
+  --sidebar-width: 240px;
+}
+
+/* ── Base reset ──────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--surface-base);
+  color: var(--text-primary);
+  font-family: "Inter", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Scrollbar ───────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* ── Text selection ──────────────────────────────────── */
+::selection {
+  background: var(--monad-glow);
+  color: #fff;
+}
+
+/* ── Utilities ───────────────────────────────────────── */
+@layer utilities {
+  .glass {
+    background: var(--surface-card);
+    border: 1px solid var(--surface-border);
+    backdrop-filter: blur(12px);
+  }
+
+  .glass-hover {
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .glass-hover:hover {
+    background: var(--surface-hover);
+    border-color: var(--surface-strong);
+  }
+
+  .glow-green {
+    box-shadow: 0 0 20px var(--monad-glow);
+  }
+
+  .text-gradient-green {
+    background: linear-gradient(135deg, var(--monad) 0%, #00cc22 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Code block */
+  .code-block {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--surface-border);
+    border-radius: 10px;
+    font-family: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #a1e3b0;
+    padding: 14px 16px;
+    overflow-x: auto;
+    white-space: pre;
+  }
+}
+
+/* ── Animations ──────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.animate-fade-in { animation: fadeIn 0.2s ease-out; }
+.animate-slide-up { animation: slideUp 0.25s ease-out; }
+
+/* Skeleton shimmer */
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+  background-size: 200% auto;
+  animation: shimmer 1.4s linear infinite;
+  border-radius: 8px;
+}
