@@ -158,7 +158,7 @@ export default function DocsPage() {
                         Copy and insert the following code block directly inside your page HTML structure:
                     </p>
                     <CopySnippet code={`<iframe
-  src="https://gasmon.app/widget/YOUR_APP_ID?accent=%2304ff2c&label=Get%20Free%20Gas&mode=dark"
+  src="https://gasmon.vercel.app/widget/YOUR_APP_ID?accent=%2304ff2c&label=Get%20Free%20Gas&mode=dark"
   width="100%"
   height="72"
   style="border: none; border-radius: 14px; background: transparent; overflow: hidden;"
@@ -178,7 +178,7 @@ export default function DocsPage() {
                     </p>
                     <CopySnippet code={`<div style="width: 100%; max-width: 420px; margin: 0 auto; padding: 8px; box-sizing: border-box;">
   <iframe
-    src="https://gasmon.app/widget/YOUR_APP_ID?accent=%2304ff2c&label=Get%20Free%20Gas&mode=dark"
+    src="https://gasmon.vercel.app/widget/YOUR_APP_ID?accent=%2304ff2c&label=Get%20Free%20Gas&mode=dark"
     width="100%"
     height="72"
     style="border: none; border-radius: 14px; background: transparent; overflow: hidden; display: block;"
@@ -209,7 +209,7 @@ export function GasMonSponsor({ appId, isDarkTheme, themeColorHex, buttonText = 
   const safeLabel = encodeURIComponent(buttonText);
   const themeMode = isDarkTheme ? "dark" : "light";
   
-  const iframeSrc = \`https://gasmon.app/widget/\${appId}?accent=\${safeAccent}&label=\${safeLabel}&mode=\${themeMode}\`;
+  const iframeSrc = \`https://gasmon.vercel.app/widget/\${appId}?accent=\${safeAccent}&label=\${safeLabel}&mode=\${themeMode}\`;
 
   return (
     <div className="w-full max-w-md mx-auto">
