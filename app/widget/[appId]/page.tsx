@@ -22,6 +22,7 @@ export default function WidgetPage({ params }: { params: Promise<{ appId: string
     const [accent, setAccent] = useState("#04ff2c");
     const [label, setLabel] = useState("Get Free Gas");
     const [colorMode, setColorMode] = useState("dark");
+    const [externalWallet, setExternalWallet] = useState<`0x${string}` | null>(null);
 
     const [status, setStatus] = useState<"idle" | "claiming" | "success" | "error">("idle");
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -33,9 +34,17 @@ export default function WidgetPage({ params }: { params: Promise<{ appId: string
             setAccent(searchParams.get("accent") || "#04ff2c");
             setLabel(searchParams.get("label") || "Get Free Gas");
             setColorMode(searchParams.get("mode") || "dark");
+
+            const w = searchParams.get("wallet");
+            if (w && /^0x[a-fA-F0-9]{40}$/.test(w)) {
+                setExternalWallet(w as `0x${string}`);
+            }
+
             setMounted(true);
         }
     }, []);
+
+    const effectiveAddress = wallet.address ?? externalWallet;
 
     const isDark = colorMode !== "light";
     const text = isDark ? "#f4f4f5" : "#0f172a";
@@ -45,7 +54,7 @@ export default function WidgetPage({ params }: { params: Promise<{ appId: string
     const buttonTextColor = getContrastColor(accent);
 
     const handleClaim = async () => {
-        if (!wallet.address) {
+        if (!effectiveAddress) {
             await wallet.connect();
             return;
         }
@@ -56,7 +65,7 @@ export default function WidgetPage({ params }: { params: Promise<{ appId: string
             const res = await fetch("/api/topup", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ app_id: appId, wallet: wallet.address }),
+                body: JSON.stringify({ app_id: appId, wallet: effectiveAddress }),
             });
             const data = await res.json();
 
@@ -188,10 +197,10 @@ export default function WidgetPage({ params }: { params: Promise<{ appId: string
                     >
                         {status === "claiming" ? (
                             <Loader2 size={11} className="gasmon-spinner" />
-                        ) : !wallet.address ? (
+                        ) : !effectiveAddress ? (
                             <Wallet size={11} />
                         ) : null}
-                        {status === "claiming" ? "Sending…" : !wallet.address ? "Connect" : label}
+                        {status === "claiming" ? "Sending…" : !effectiveAddress ? "Connect" : label}
                     </button>
                 )}
             </div>
