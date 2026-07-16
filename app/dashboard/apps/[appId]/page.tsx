@@ -6,11 +6,10 @@ import Link from "next/link";
 import { useWallet } from "@/context/WalletContext";
 import { publicClient } from "@/lib/public-client";
 import { GAS_VAULT_CONTRACT } from "@/lib/vault-contract";
-
-// Import modular tab components
 import { OverviewTab } from "@/components/apps/OverviewTab";
 import { SettingsTab } from "@/components/apps/SettingsTab";
 import { WidgetStudio } from "@/components/apps/WidgetStudio";
+import { AnalyticsTab } from "@/components/apps/AnalyticsTab";
 
 interface AppRow {
     id: number;
@@ -26,15 +25,15 @@ interface AppRow {
     created_at: string;
 }
 
-type Tab = "overview" | "settings" | "widget";
+type Tab = "overview" | "analytics" | "settings" | "widget";
 
 export default function AppDetailPage({ params }: { params: Promise<{ appId: string }> }) {
     const { appId } = use(params);
     const wallet = useWallet();
     const [app, setApp] = useState<AppRow | null>(null);
     const [balance, setBalance] = useState<bigint>(BigInt(0));
-    const [loading, setLoading] = useState(true); // Loading pertama kali buka halaman
-    const [isRefreshing, setIsRefreshing] = useState(false); // Update background (tanpa merusak UI)
+    const [loading, setLoading] = useState(true);
+    const [isRefreshing, setIsRefreshing] = useState(false);
     const [tab, setTab] = useState<Tab>("overview");
 
     const fetchApp = useCallback(async (isBackground = false) => {
@@ -44,7 +43,6 @@ export default function AppDetailPage({ params }: { params: Promise<{ appId: str
             return;
         }
 
-        // Jika ini background update, jangan aktifkan screen loading spinner utama
         if (!isBackground) {
             setLoading(true);
         } else {
@@ -81,16 +79,16 @@ export default function AppDetailPage({ params }: { params: Promise<{ appId: str
     }, [wallet.address, appId]);
 
     useEffect(() => {
-        fetchApp(false); // Pertama kali render, pakai loading screen utama
+        fetchApp(false);
     }, [fetchApp]);
 
     const TABS: { id: Tab; label: string }[] = [
         { id: "overview", label: "Overview" },
+        { id: "analytics", label: "Analytics" },
         { id: "settings", label: "Settings" },
         { id: "widget", label: "Widget Studio" },
     ];
 
-    // 1. SIMPLE SPINNER LOADING (Hanya aktif di loading pertama kali, bukan saat reload balance)
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
@@ -99,7 +97,6 @@ export default function AppDetailPage({ params }: { params: Promise<{ appId: str
         );
     }
 
-    // 2. HANDLING: WALLET DISCONNECTED
     if (!wallet.address) {
         return (
             <div className="flex items-center justify-center min-h-[65vh] px-4">
@@ -116,7 +113,6 @@ export default function AppDetailPage({ params }: { params: Promise<{ appId: str
         );
     }
 
-    // 3. HANDLING: UNAUTHORIZED / NOT OWNER
     if (!app) {
         return (
             <div className="flex items-center justify-center min-h-[65vh] px-4">
@@ -139,7 +135,6 @@ export default function AppDetailPage({ params }: { params: Promise<{ appId: str
         );
     }
 
-    // 4. MAIN INTERFACE
     return (
         <div className="px-4 sm:px-8 py-6 sm:py-8 max-w-5xl mx-auto space-y-6">
 
@@ -194,8 +189,12 @@ export default function AppDetailPage({ params }: { params: Promise<{ appId: str
                         app={app}
                         balance={balance}
                         walletClient={wallet.getWalletClient()}
-                        // fetchApp(true) mencegah trigger loading full-screen saat update data selesai
                         onChanged={() => fetchApp(true)}
+                    />
+                )}
+                {tab === "analytics" && (
+                    <AnalyticsTab
+                        app={app}
                     />
                 )}
                 {tab === "settings" && (
